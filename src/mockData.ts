@@ -95,14 +95,14 @@ export const INITIAL_PRODUCTS: Product[] = [
   { id: 'drk_03', name: 'Espresso Martini (Single Origin)', category: 'drinks', subcategory: 'Cocktails', price: 17.00, active: true, sku: 'CK-03' },
   { id: 'drk_04', name: 'Oaxacan Mezcal Negroni', category: 'drinks', subcategory: 'Cocktails', price: 18.50, active: true, sku: 'CK-04' },
   { id: 'drk_05', name: 'Paper Plane', category: 'drinks', subcategory: 'Cocktails', price: 16.00, active: true, sku: 'CK-05' },
-  { id: 'drk_06', name: 'Clarified Milk Punch', category: 'drinks', subcategory: 'Cocktails', price: 19.00, active: true, sku: 'CK-06' },
+  { id: 'drk_06', name: 'Clarified Milk Punch', category: 'drinks', subcategory: 'Cocktails', price: 19.00, active: true, sku: 'CK-06', allergens: ['milk'] },
 
   // Beers & Ciders
-  { id: 'drk_07', name: 'Hazy Mountain IPA 16oz', category: 'drinks', subcategory: 'Beer & Cider', price: 9.50, active: true, sku: 'BR-01' },
-  { id: 'drk_08', name: 'Czech Pilsner (Draft)', category: 'drinks', subcategory: 'Beer & Cider', price: 8.00, active: true, sku: 'BR-02' },
+  { id: 'drk_07', name: 'Hazy Mountain IPA 16oz', category: 'drinks', subcategory: 'Beer & Cider', price: 9.50, active: true, sku: 'BR-01', allergens: ['wheat'] },
+  { id: 'drk_08', name: 'Czech Pilsner (Draft)', category: 'drinks', subcategory: 'Beer & Cider', price: 8.00, active: true, sku: 'BR-02', allergens: ['wheat'] },
   { id: 'drk_09', name: 'Japanese Rice Lager', category: 'drinks', subcategory: 'Beer & Cider', price: 8.50, active: true, sku: 'BR-03' },
   { id: 'drk_10', name: 'Dry Orchard Apple Cider', category: 'drinks', subcategory: 'Beer & Cider', price: 9.00, active: true, sku: 'BR-04' },
-  { id: 'drk_11', name: 'Oatmeal Stout Nitro', category: 'drinks', subcategory: 'Beer & Cider', price: 10.00, active: true, sku: 'BR-05' },
+  { id: 'drk_11', name: 'Oatmeal Stout Nitro', category: 'drinks', subcategory: 'Beer & Cider', price: 10.00, active: true, sku: 'BR-05', allergens: ['wheat'] },
 
   // Natural & Fine Wines
   { id: 'drk_12', name: 'Skin-Contact Orange (Glass)', category: 'drinks', subcategory: 'Wine', price: 15.00, active: true, sku: 'WN-01' },
@@ -119,24 +119,24 @@ export const INITIAL_PRODUCTS: Product[] = [
   { id: 'drk_21', name: 'Artisan Sparkling Water (750ml)', category: 'drinks', subcategory: 'Zero Proof', price: 7.00, active: true, sku: 'NA-04' },
 
   // Food - Small Plates & Starters
-  { id: 'fd_01', name: 'Hand-Cut Truffle Fries & Aioli', category: 'food', subcategory: 'Starters', price: 14.00, active: true, sku: 'FD-01' },
-  { id: 'fd_02', name: 'Hamachi Crudo, Ponzu, Finger Lime', category: 'food', subcategory: 'Starters', price: 21.00, active: true, sku: 'FD-02' },
-  { id: 'fd_03', name: 'Burrata di Puglia & Grilled Figs', category: 'food', subcategory: 'Starters', price: 19.50, active: true, sku: 'FD-03' },
+  { id: 'fd_01', name: 'Hand-Cut Truffle Fries & Aioli', category: 'food', subcategory: 'Starters', price: 14.00, active: true, sku: 'FD-01', allergens: ['eggs'] },
+  { id: 'fd_02', name: 'Hamachi Crudo, Ponzu, Finger Lime', category: 'food', subcategory: 'Starters', price: 21.00, active: true, sku: 'FD-02', allergens: ['fish', 'soybeans'] },
+  { id: 'fd_03', name: 'Burrata di Puglia & Grilled Figs', category: 'food', subcategory: 'Starters', price: 19.50, active: true, sku: 'FD-03', allergens: ['milk'] },
   { id: 'fd_04', name: 'Blistered Shishito Peppers', category: 'food', subcategory: 'Starters', price: 13.00, active: true, sku: 'FD-04' },
-  { id: 'fd_05', name: 'Crispy Calamari, Calabrian Dip', category: 'food', subcategory: 'Starters', price: 18.00, active: true, sku: 'FD-05' },
+  { id: 'fd_05', name: 'Crispy Calamari, Calabrian Dip', category: 'food', subcategory: 'Starters', price: 18.00, active: true, sku: 'FD-05', allergens: ['crustacean', 'wheat', 'eggs'] },
 
   // Food - Mains
-  { id: 'fd_06', name: 'Wagyu Smash Burger & Brioche', category: 'food', subcategory: 'Mains', price: 24.00, active: true, sku: 'FD-06' },
-  { id: 'fd_07', name: 'Miso-Glazed Black Cod', category: 'food', subcategory: 'Mains', price: 38.00, active: true, sku: 'FD-07' },
-  { id: 'fd_08', name: 'Handmade Cacio e Pepe', category: 'food', subcategory: 'Mains', price: 26.00, active: true, sku: 'FD-08' },
+  { id: 'fd_06', name: 'Wagyu Smash Burger & Brioche', category: 'food', subcategory: 'Mains', price: 24.00, active: true, sku: 'FD-06', allergens: ['wheat', 'milk', 'eggs', 'sesame'] },
+  { id: 'fd_07', name: 'Miso-Glazed Black Cod', category: 'food', subcategory: 'Mains', price: 38.00, active: true, sku: 'FD-07', allergens: ['fish', 'soybeans', 'sesame'] },
+  { id: 'fd_08', name: 'Handmade Cacio e Pepe', category: 'food', subcategory: 'Mains', price: 26.00, active: true, sku: 'FD-08', allergens: ['wheat', 'milk'] },
   { id: 'fd_09', name: 'Prime 12oz Dry-Aged Ribeye', category: 'food', subcategory: 'Mains', price: 54.00, active: true, sku: 'FD-09' },
-  { id: 'fd_10', name: 'Crispy Skin Skuna Bay Salmon', category: 'food', subcategory: 'Mains', price: 32.00, active: true, sku: 'FD-10' },
-  { id: 'fd_11', name: 'Wild Chanterelle Risotto', category: 'food', subcategory: 'Mains', price: 28.00, active: true, sku: 'FD-11' },
+  { id: 'fd_10', name: 'Crispy Skin Skuna Bay Salmon', category: 'food', subcategory: 'Mains', price: 32.00, active: true, sku: 'FD-10', allergens: ['fish'] },
+  { id: 'fd_11', name: 'Wild Chanterelle Risotto', category: 'food', subcategory: 'Mains', price: 28.00, active: true, sku: 'FD-11', allergens: ['milk'] },
 
   // Food - Desserts
-  { id: 'fd_12', name: 'Burnt Basque Cheesecake', category: 'food', subcategory: 'Desserts', price: 14.00, active: true, sku: 'FD-12' },
-  { id: 'fd_13', name: '70% Valrhona Dark Chocolate Ganache', category: 'food', subcategory: 'Desserts', price: 15.00, active: true, sku: 'FD-13' },
-  { id: 'fd_14', name: 'Pistachio Gelato & Sea Salt', category: 'food', subcategory: 'Desserts', price: 11.00, active: true, sku: 'FD-14' },
+  { id: 'fd_12', name: 'Burnt Basque Cheesecake', category: 'food', subcategory: 'Desserts', price: 14.00, active: true, sku: 'FD-12', allergens: ['milk', 'eggs', 'wheat'] },
+  { id: 'fd_13', name: '70% Valrhona Dark Chocolate Ganache', category: 'food', subcategory: 'Desserts', price: 15.00, active: true, sku: 'FD-13', allergens: ['milk', 'soybeans'] },
+  { id: 'fd_14', name: 'Pistachio Gelato & Sea Salt', category: 'food', subcategory: 'Desserts', price: 11.00, active: true, sku: 'FD-14', allergens: ['tree_nuts', 'milk'] },
 
   // Aux - Services, Merch & Custom
   { id: 'aux_01', name: 'Corkage Fee (Per Bottle)', category: 'aux', subcategory: 'Services', price: 35.00, active: true, sku: 'AUX-01' },
@@ -147,24 +147,32 @@ export const INITIAL_PRODUCTS: Product[] = [
 ];
 
 export const INITIAL_TABLES: VenueTable[] = [
-  // Bar Section
-  { id: 'tbl_b1', tableName: 'Bar 01', section: 'Main Bar', posX: 14, posY: 18, shape: 'circle', seats: 2, status: 'occupied', assignedServer: 'Sarah Jenkins' },
-  { id: 'tbl_b2', tableName: 'Bar 02', section: 'Main Bar', posX: 14, posY: 36, shape: 'circle', seats: 2, status: 'empty' },
-  { id: 'tbl_b3', tableName: 'Bar 03', section: 'Main Bar', posX: 14, posY: 54, shape: 'circle', seats: 2, status: 'billed', assignedServer: 'Marcus Thorne' },
-  { id: 'tbl_b4', tableName: 'Bar 04', section: 'Main Bar', posX: 14, posY: 72, shape: 'circle', seats: 2, status: 'empty' },
+  // West Bar (Left Flank - Craft Beers & Cocktails)
+  { id: 'tbl_bw1', tableName: 'Bar 01', section: 'West Bar', posX: 11, posY: 22, shape: 'circle', seats: 2, status: 'occupied', assignedServer: 'Sarah Jenkins' },
+  { id: 'tbl_bw2', tableName: 'Bar 02', section: 'West Bar', posX: 11, posY: 40, shape: 'circle', seats: 2, status: 'empty' },
+  { id: 'tbl_bw3', tableName: 'Bar 03', section: 'West Bar', posX: 11, posY: 58, shape: 'circle', seats: 2, status: 'billed', assignedServer: 'Marcus Thorne' },
+  { id: 'tbl_bw4', tableName: 'Bar 04', section: 'West Bar', posX: 11, posY: 76, shape: 'circle', seats: 2, status: 'empty' },
 
-  // Dining Hall
-  { id: 'tbl_d1', tableName: 'Table 10', section: 'Dining Hall', posX: 40, posY: 20, shape: 'rectangle', seats: 4, status: 'occupied', assignedServer: 'Sarah Jenkins' },
-  { id: 'tbl_d2', tableName: 'Table 11', section: 'Dining Hall', posX: 62, posY: 20, shape: 'rectangle', seats: 4, status: 'action_required', assignedServer: 'Liam Chen' },
-  { id: 'tbl_d3', tableName: 'Table 12', section: 'Dining Hall', posX: 40, posY: 46, shape: 'rectangle', seats: 4, status: 'empty' },
-  { id: 'tbl_d4', tableName: 'Table 14', section: 'Dining Hall', posX: 62, posY: 46, shape: 'rectangle', seats: 6, status: 'occupied', assignedServer: 'Marcus Thorne' },
-  { id: 'tbl_d5', tableName: 'Table 15', section: 'Dining Hall', posX: 40, posY: 74, shape: 'rectangle', seats: 4, status: 'empty' },
-  { id: 'tbl_d6', tableName: 'Table 16', section: 'Dining Hall', posX: 62, posY: 74, shape: 'rectangle', seats: 4, status: 'empty' },
+  // Central Dining Hall - Row 1 (North / Banquettes & Chef's Table)
+  { id: 'tbl_d1', tableName: 'Table 01', section: 'Dining Hall', posX: 32, posY: 24, shape: 'booth', seats: 4, status: 'occupied', assignedServer: 'Sarah Jenkins' },
+  { id: 'tbl_d2', tableName: 'Table 02', section: 'Dining Hall', posX: 50, posY: 24, shape: 'rectangle', seats: 6, status: 'occupied', assignedServer: 'Marcus Thorne' },
+  { id: 'tbl_d3', tableName: 'Table 03', section: 'Dining Hall', posX: 68, posY: 24, shape: 'booth', seats: 4, status: 'empty' },
 
-  // Booths & Lounge
-  { id: 'tbl_l1', tableName: 'Booth A', section: 'Lounge', posX: 86, posY: 22, shape: 'booth', seats: 6, status: 'occupied', assignedServer: 'Elena Rostova' },
-  { id: 'tbl_l2', tableName: 'Booth B', section: 'Lounge', posX: 86, posY: 50, shape: 'booth', seats: 6, status: 'empty' },
-  { id: 'tbl_l3', tableName: 'Booth C', section: 'Lounge', posX: 86, posY: 78, shape: 'booth', seats: 8, status: 'billed', assignedServer: 'Sarah Jenkins' },
+  // Central Dining Hall - Row 2 (Center Promenade & Grand VIP)
+  { id: 'tbl_d4', tableName: 'Table 04', section: 'Dining Hall', posX: 32, posY: 49, shape: 'rectangle', seats: 4, status: 'action_required', assignedServer: 'Liam Chen' },
+  { id: 'tbl_d5', tableName: 'Table 05', section: 'Dining Hall', posX: 50, posY: 49, shape: 'circle', seats: 6, status: 'empty' },
+  { id: 'tbl_d6', tableName: 'Table 06', section: 'Dining Hall', posX: 68, posY: 49, shape: 'rectangle', seats: 4, status: 'empty' },
+
+  // Central Dining Hall - Row 3 (South / Garden & Entrance Dining)
+  { id: 'tbl_d7', tableName: 'Table 07', section: 'Dining Hall', posX: 32, posY: 74, shape: 'rectangle', seats: 4, status: 'empty' },
+  { id: 'tbl_d8', tableName: 'Table 08', section: 'Dining Hall', posX: 50, posY: 74, shape: 'rectangle', seats: 4, status: 'empty' },
+  { id: 'tbl_d9', tableName: 'Table 09', section: 'Dining Hall', posX: 68, posY: 74, shape: 'rectangle', seats: 4, status: 'empty' },
+
+  // East Bar (Right Flank - Fine Spirits & Wine Bar)
+  { id: 'tbl_be1', tableName: 'Bar 05', section: 'East Bar', posX: 89, posY: 22, shape: 'circle', seats: 2, status: 'occupied', assignedServer: 'Elena Rostova' },
+  { id: 'tbl_be2', tableName: 'Bar 06', section: 'East Bar', posX: 89, posY: 40, shape: 'circle', seats: 2, status: 'empty' },
+  { id: 'tbl_be3', tableName: 'Bar 07', section: 'East Bar', posX: 89, posY: 58, shape: 'circle', seats: 2, status: 'billed', assignedServer: 'Sarah Jenkins' },
+  { id: 'tbl_be4', tableName: 'Bar 08', section: 'East Bar', posX: 89, posY: 76, shape: 'circle', seats: 2, status: 'empty' },
 ];
 
 export const INITIAL_SETTINGS: VenueSettings = {

@@ -14,10 +14,13 @@ import {
   Wine,
   Utensils,
   Coffee,
-  ShoppingBag
+  ShoppingBag,
+  ShieldAlert
 } from 'lucide-react';
 import { usePOS } from '../context/POSContext';
-import { Product } from '../types';
+import { Product, FDAAllergen } from '../types';
+import { AllergenMicroDots, AllergenLegendModal, AllergenSelector } from './AllergenBadgeList';
+import { FDA_ALLERGENS, getAllergenInfo } from '../data/allergens';
 
 interface ProductGridProps {
   category: string;
@@ -41,12 +44,17 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ category }) => {
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [editPriceInput, setEditPriceInput] = useState<string>('');
   
+  // FDA Allergen guide & safety filter state
+  const [isAllergenLegendOpen, setIsAllergenLegendOpen] = useState<boolean>(false);
+  const [activeAllergenFilter, setActiveAllergenFilter] = useState<FDAAllergen | 'all'>('all');
+
   // Quick Add Product modal state (for managers/admins)
   const [isQuickAddOpen, setIsQuickAddOpen] = useState<boolean>(false);
   const [quickName, setQuickName] = useState<string>('');
   const [quickPrice, setQuickPrice] = useState<string>('');
   const [quickSubcategory, setQuickSubcategory] = useState<string>('General');
   const [quickStation, setQuickStation] = useState<'kitchen' | 'bar' | 'aux'>('bar');
+  const [quickAllergens, setQuickAllergens] = useState<FDAAllergen[]>([]);
 
   // Custom open item for Aux category
   const [customItemName, setCustomItemName] = useState<string>('');
@@ -147,12 +155,14 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ category }) => {
       price: priceNum,
       active: true,
       sku: `SKU-${Math.floor(1000 + Math.random() * 9000)}`,
+      allergens: quickAllergens.length > 0 ? quickAllergens : undefined,
     });
 
     addItemToOrder(newProd);
     setIsQuickAddOpen(false);
     setQuickName('');
     setQuickPrice('');
+    setQuickAllergens([]);
   };
 
   const handleStartEditPrice = (e: React.MouseEvent, product: Product) => {
@@ -243,25 +253,66 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ category }) => {
           </div>
         </div>
 
-        {/* Bottom Tier: Subcategories Pills - Large Touch Targets */}
-        <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-0.5">
-          <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 shrink-0 mr-1">
-            Filter:
-          </span>
-          {subcategories.map(sub => (
+        {/* Bottom Tier: Subcategories Pills + FDA Food Allergens Safety Controls */}
+        <div className="flex items-center justify-between gap-3 overflow-x-auto scrollbar-none py-0.5">
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 shrink-0 mr-1">
+              Filter:
+            </span>
+            {subcategories.map(sub => (
+              <button
+                key={sub}
+                id={`filter-sub-${sub}`}
+                onClick={() => setSelectedSubcategory(sub)}
+                className={`h-10 px-3.5 text-xs font-semibold rounded-xl transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                  selectedSubcategory === sub
+                    ? 'bg-zinc-100 text-zinc-950 font-bold shadow-md'
+                    : 'bg-zinc-900 text-zinc-400 hover:text-zinc-200 border border-zinc-800'
+                }`}
+              >
+                {sub}
+              </button>
+            ))}
+          </div>
+
+          {/* FDA Food Allergens Safety Controls */}
+          <div className="flex items-center gap-2 shrink-0 pl-3 border-l border-zinc-800">
+            {/* Allergen Filter Dropdown */}
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 hidden xl:inline">
+                Allergen Safety:
+              </span>
+              <select
+                id="fda-allergen-filter-select"
+                value={activeAllergenFilter}
+                onChange={e => setActiveAllergenFilter(e.target.value as any)}
+                className={`h-10 px-2.5 rounded-xl border text-xs font-semibold outline-none transition-all cursor-pointer ${
+                  activeAllergenFilter !== 'all'
+                    ? 'bg-rose-500/20 border-rose-500/50 text-rose-300 font-bold'
+                    : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                <option value="all">All Items (Allergens Normal)</option>
+                {FDA_ALLERGENS.map(a => (
+                  <option key={a.id} value={a.id}>
+                    ⚠️ Flag: {a.label} ({a.shortCode})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* FDA Allergen Key & Guide Button */}
             <button
-              key={sub}
-              id={`filter-sub-${sub}`}
-              onClick={() => setSelectedSubcategory(sub)}
-              className={`h-10 px-3.5 text-xs font-semibold rounded-xl transition-all whitespace-nowrap flex items-center gap-1.5 ${
-                selectedSubcategory === sub
-                  ? 'bg-zinc-100 text-zinc-950 font-bold shadow-md'
-                  : 'bg-zinc-900 text-zinc-400 hover:text-zinc-200 border border-zinc-800'
-              }`}
+              type="button"
+              id="open-fda-allergen-guide-btn"
+              onClick={() => setIsAllergenLegendOpen(true)}
+              className="h-10 px-3 rounded-xl bg-amber-400/15 hover:bg-amber-400/25 border border-amber-400/30 text-amber-300 text-xs font-bold flex items-center gap-1.5 whitespace-nowrap transition-all shadow-sm cursor-pointer"
+              title="View FDA 9 Major Food Allergens Guide & Key"
             >
-              {sub}
+              <ShieldAlert className="w-3.5 h-3.5 text-amber-400" />
+              <span>FDA Allergens</span>
             </button>
-          ))}
+          </div>
         </div>
       </div>
 
@@ -349,18 +400,35 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ category }) => {
                         onClick={() => {
                           if (!isEditing) addItemToOrder(product);
                         }}
-                        className="group relative min-h-[116px] sm:min-h-[126px] p-4 rounded-2xl bg-[#151518] hover:bg-[#1c1c21] border border-zinc-800/80 hover:border-zinc-700 text-left flex flex-col justify-between active:scale-[0.98] transition-all cursor-pointer shadow-md"
+                        className={`group relative min-h-[116px] sm:min-h-[126px] p-3.5 sm:p-4 rounded-2xl border text-left flex flex-col justify-between active:scale-[0.98] transition-all cursor-pointer shadow-md ${
+                          activeAllergenFilter !== 'all' && product.allergens?.includes(activeAllergenFilter)
+                            ? 'bg-[#1e1316] border-rose-500/70 ring-1 ring-rose-500/40 hover:border-rose-400'
+                            : 'bg-[#151518] hover:bg-[#1c1c21] border-zinc-800/80 hover:border-zinc-700'
+                        }`}
                       >
-                        {/* Item Name */}
+                        {/* Item Name & Allergen Micro Dots */}
                         <div className="space-y-1">
-                          <span className="text-sm sm:text-base leading-snug font-bold text-zinc-100 group-hover:text-white line-clamp-2">
-                            {product.name}
-                          </span>
-                          {product.sku && (
-                            <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-mono block">
-                              {product.sku}
+                          <div className="flex items-start justify-between gap-1.5">
+                            <span className="text-sm sm:text-base leading-snug font-bold text-zinc-100 group-hover:text-white line-clamp-2">
+                              {product.name}
                             </span>
-                          )}
+                            {/* FDA Allergen colored dots */}
+                            <AllergenMicroDots allergens={product.allergens} size="sm" />
+                          </div>
+
+                          <div className="flex items-center justify-between gap-1">
+                            {product.sku && (
+                              <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-mono block">
+                                {product.sku}
+                              </span>
+                            )}
+
+                            {activeAllergenFilter !== 'all' && product.allergens?.includes(activeAllergenFilter) && (
+                              <span className="text-[9px] font-mono font-bold text-rose-300 bg-rose-500/25 px-1.5 py-0.5 rounded border border-rose-500/40 ml-auto whitespace-nowrap">
+                                ⚠️ {getAllergenInfo(activeAllergenFilter)?.label.split(' / ')[0]}
+                              </span>
+                            )}
+                          </div>
                         </div>
 
                         {/* Price & Admin Quick Edit */}
@@ -480,17 +548,28 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ category }) => {
                   </div>
                 </div>
 
+                {/* FDA Allergen Selector */}
+                <div className="pt-2 border-t border-zinc-800">
+                  <AllergenSelector
+                    selectedAllergens={quickAllergens}
+                    onChange={setQuickAllergens}
+                  />
+                </div>
+
                 <div className="pt-3 flex gap-2.5">
                   <button
                     type="button"
-                    onClick={() => setIsQuickAddOpen(false)}
-                    className="flex-1 h-12 rounded-xl bg-zinc-800 text-zinc-300 text-xs sm:text-sm font-semibold hover:bg-zinc-700 transition-all"
+                    onClick={() => {
+                      setIsQuickAddOpen(false);
+                      setQuickAllergens([]);
+                    }}
+                    className="flex-1 h-12 rounded-xl bg-zinc-800 text-zinc-300 text-xs sm:text-sm font-semibold hover:bg-zinc-700 transition-all cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 h-12 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-xs sm:text-sm shadow-md transition-all"
+                    className="flex-1 h-12 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
                   >
                     Add & Order
                   </button>
@@ -500,6 +579,12 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ category }) => {
           </div>
         )}
       </AnimatePresence>
+
+      {/* FDA Major Allergens Key & Guide Modal */}
+      <AllergenLegendModal
+        isOpen={isAllergenLegendOpen}
+        onClose={() => setIsAllergenLegendOpen(false)}
+      />
     </div>
   );
 };

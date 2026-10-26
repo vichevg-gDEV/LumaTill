@@ -40,16 +40,16 @@ const MainAppLayout: React.FC = () => {
   const unsubmittedCount = activeOrder.items.filter(i => i.status === 'unsubmitted').reduce((sum, i) => sum + i.quantity, 0);
 
   return (
-    <div className={`h-screen w-screen flex flex-col overflow-hidden select-none relative font-["Inter",sans-serif] ${
+    <div className={`h-screen w-full max-w-full flex flex-col overflow-hidden select-none relative font-["Inter",sans-serif] ${
       settings.theme === 'light' ? 'theme-light bg-[#f4f4f5] text-zinc-900' : 'bg-[#09090B] text-[#FAFAFA]'
     }`}>
       {/* Top Main Navigation Bar */}
       <NavigationDock />
 
       {/* Main Operational Stage */}
-      <main className="flex-1 flex overflow-hidden w-full relative">
+      <main className="flex-1 flex overflow-hidden w-full max-w-full relative min-w-0">
         {/* Left / Center Stage Area */}
-        <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#0c0c0f]">
+        <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#0c0c0f] min-w-0">
           <AnimatePresence mode="wait">
             {/* Tables Floor Plan */}
             {activeTab === 'tables' && (
@@ -204,7 +204,7 @@ const MainAppLayout: React.FC = () => {
 
         {/* Right Sidebar (Desktop only, visible during ordering and table operations) */}
         {isOrderingStage && !isKitchenView && !isBarView && (
-          <div className="hidden lg:flex w-[340px] xl:w-[370px] h-full shrink-0">
+          <div className="hidden lg:flex w-[290px] xl:w-[330px] 2xl:w-[360px] max-w-[32vw] h-full shrink-0 overflow-hidden">
             <TotalSidebar />
           </div>
         )}

@@ -68,6 +68,7 @@ interface POSContextType {
 
   // Management actions
   updateTableLayout: (tableId: string, posX: number, posY: number) => void;
+  resetTablesLayout: () => void;
   addTable: (table: Omit<VenueTable, 'id' | 'status'>) => void;
   deleteTable: (tableId: string) => void;
   updateTableDetails: (tableId: string, updates: Partial<VenueTable>) => void;
@@ -101,10 +102,10 @@ const STORAGE_KEYS = {
   PROFILES: 'lumatill_profiles_v2',
   CATEGORIES: 'lumatill_categories_v2',
   PRODUCTS: 'lumatill_products_v2',
-  TABLES: 'lumatill_tables_v2',
+  TABLES: 'lumatill_tables_v6',
   SETTINGS: 'lumatill_settings_v2',
   ORDERS: 'lumatill_orders_v2',
-  OPEN_ORDERS: 'lumatill_open_orders_v2',
+  OPEN_ORDERS: 'lumatill_open_orders_v6',
   STATION_TICKETS: 'lumatill_station_tickets_v2',
 };
 
@@ -114,7 +115,7 @@ const INITIAL_OPEN_ORDERS: Record<string, Order> = {
   tbl_d1: {
     id: 'ord_tbl_d1',
     tableId: 'tbl_d1',
-    tableName: 'Table 10',
+    tableName: 'Table 01',
     openedBy: 'user_emp_01',
     openedByName: 'Sarah Jenkins',
     openedByRole: 'emp',
@@ -131,9 +132,9 @@ const INITIAL_OPEN_ORDERS: Record<string, Order> = {
     isClosed: false,
     createdAt: new Date(Date.now() - 10 * 60000).toISOString(),
   },
-  tbl_b1: {
-    id: 'ord_tbl_b1',
-    tableId: 'tbl_b1',
+  tbl_bw1: {
+    id: 'ord_tbl_bw1',
+    tableId: 'tbl_bw1',
     tableName: 'Bar 01',
     openedBy: 'user_emp_01',
     openedByName: 'Sarah Jenkins',
@@ -149,10 +150,10 @@ const INITIAL_OPEN_ORDERS: Record<string, Order> = {
     isClosed: false,
     createdAt: new Date(Date.now() - 15 * 60000).toISOString(),
   },
-  tbl_d4: {
-    id: 'ord_tbl_d4',
-    tableId: 'tbl_d4',
-    tableName: 'Table 14',
+  tbl_d2: {
+    id: 'ord_tbl_d2',
+    tableId: 'tbl_d2',
+    tableName: 'Table 02',
     openedBy: 'user_emp_02',
     openedByName: 'Marcus Thorne',
     openedByRole: 'emp',
@@ -168,10 +169,10 @@ const INITIAL_OPEN_ORDERS: Record<string, Order> = {
     isClosed: false,
     createdAt: new Date(Date.now() - 6 * 60000).toISOString(),
   },
-  tbl_l1: {
-    id: 'ord_tbl_l1',
-    tableId: 'tbl_l1',
-    tableName: 'Booth A',
+  tbl_be1: {
+    id: 'ord_tbl_be1',
+    tableId: 'tbl_be1',
+    tableName: 'Bar 05',
     openedBy: 'user_mgr_01',
     openedByName: 'Elena Rostova',
     openedByRole: 'manager',
@@ -194,7 +195,7 @@ const INITIAL_STATION_TICKETS: StationTicket[] = [
     id: 'st_k_01',
     orderId: 'ord_tbl_d1',
     tableId: 'tbl_d1',
-    tableName: 'Table 10',
+    tableName: 'Table 01',
     serverName: 'Sarah Jenkins',
     station: 'kitchen',
     submittedAt: new Date(Date.now() - 8 * 60000).toISOString(),
@@ -211,7 +212,7 @@ const INITIAL_STATION_TICKETS: StationTicket[] = [
     id: 'st_b_01',
     orderId: 'ord_tbl_d1',
     tableId: 'tbl_d1',
-    tableName: 'Table 10',
+    tableName: 'Table 01',
     serverName: 'Sarah Jenkins',
     station: 'bar',
     submittedAt: new Date(Date.now() - 8 * 60000).toISOString(),
@@ -225,8 +226,8 @@ const INITIAL_STATION_TICKETS: StationTicket[] = [
   },
   {
     id: 'st_b_02',
-    orderId: 'ord_tbl_b1',
-    tableId: 'tbl_b1',
+    orderId: 'ord_tbl_bw1',
+    tableId: 'tbl_bw1',
     tableName: 'Bar 01',
     serverName: 'Sarah Jenkins',
     station: 'bar',
@@ -238,9 +239,9 @@ const INITIAL_STATION_TICKETS: StationTicket[] = [
   },
   {
     id: 'st_k_02',
-    orderId: 'ord_tbl_d4',
-    tableId: 'tbl_d4',
-    tableName: 'Table 14',
+    orderId: 'ord_tbl_d2',
+    tableId: 'tbl_d2',
+    tableName: 'Table 02',
     serverName: 'Marcus Thorne',
     station: 'kitchen',
     submittedAt: new Date(Date.now() - 4 * 60000).toISOString(),
@@ -338,7 +339,17 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [products, setProducts] = useState<Product[]>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.PRODUCTS) || localStorage.getItem('glasstill_products_v1');
-      return saved ? JSON.parse(saved) : INITIAL_PRODUCTS;
+      if (saved) {
+        const parsed: Product[] = JSON.parse(saved);
+        return parsed.map(p => {
+          const init = INITIAL_PRODUCTS.find(ip => ip.id === p.id);
+          if (init && init.allergens && !p.allergens) {
+            return { ...p, allergens: init.allergens };
+          }
+          return p;
+        });
+      }
+      return INITIAL_PRODUCTS;
     } catch {
       return INITIAL_PRODUCTS;
     }
@@ -390,7 +401,7 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
-  const [activeTab, setActiveTab] = useState<TabType>('drinks');
+  const [activeTab, setActiveTab] = useState<TabType>('tables');
   const [selectedTable, setSelectedTable] = useState<VenueTable | null>(null);
   const [syncStatus, setSyncStatus] = useState<'synced' | 'syncing' | 'offline'>('synced');
   const [lastSubmissionNotice, setLastSubmissionNotice] = useState<{ text: string; foodCount: number; drinkCount: number; timestamp: number } | null>(null);
@@ -535,6 +546,7 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       timeoutId = window.setTimeout(() => {
         setCurrentUser(null);
         setActiveTab('lock');
+        setSelectedTable(null);
         playAudioFeedback('tap');
       }, settings.autoLockSeconds * 1000);
     };
@@ -601,7 +613,7 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return 'aux';
   }, [categories]);
 
-  // PIN Authentication - routes Kitchen PIN to Kitchen KDS and Bar PIN to Bar KDS
+  // PIN Authentication - routes Kitchen PIN to Kitchen KDS, Bar PIN to Bar KDS, and all other staff immediately to Tables floor plan
   const unlockWithPin = useCallback((pin: string): boolean => {
     const matched = profiles.find(p => p.pin === pin);
     if (matched) {
@@ -611,18 +623,21 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       } else if (matched.role === 'bar') {
         setActiveTab('bar');
       } else {
-        setActiveTab(categories[0]?.id || 'drinks');
+        // Staff/Admin/Manager immediately see the tables floor plan to choose a table
+        setActiveTab('tables');
+        setSelectedTable(null);
       }
       playAudioFeedback('success');
       return true;
     }
     playAudioFeedback('error');
     return false;
-  }, [profiles, categories, playAudioFeedback]);
+  }, [profiles, playAudioFeedback]);
 
   const lockTill = useCallback(() => {
     setCurrentUser(null);
     setActiveTab('lock');
+    setSelectedTable(null);
     playAudioFeedback('tap');
   }, [playAudioFeedback]);
 
@@ -690,6 +705,7 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           addedAt: new Date().toISOString(),
           status: 'unsubmitted',
           destination: dest,
+          allergens: product.allergens,
         };
         newItems = [...prev.items, newItem];
       }
@@ -857,6 +873,7 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           quantity: i.quantity,
           category: i.category,
           note: i.note,
+          allergens: i.allergens,
         })),
         submittedAt: submissionTime,
         status: 'pending',
@@ -878,6 +895,7 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           quantity: i.quantity,
           category: i.category,
           note: i.note,
+          allergens: i.allergens,
         })),
         submittedAt: submissionTime,
         status: 'pending',
@@ -1134,6 +1152,15 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       return updated;
     });
   }, [broadcastChange]);
+
+  const resetTablesLayout = useCallback(() => {
+    setTables(INITIAL_TABLES);
+    broadcastChange('TABLE_UPDATE', INITIAL_TABLES);
+    try {
+      localStorage.setItem(STORAGE_KEYS.TABLES, JSON.stringify(INITIAL_TABLES));
+    } catch {}
+    playAudioFeedback('success');
+  }, [broadcastChange, playAudioFeedback]);
 
   const addTable = useCallback((tableData: Omit<VenueTable, 'id' | 'status'>) => {
     const newTable: VenueTable = {
@@ -1415,6 +1442,7 @@ export const POSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         replyToStationTicket,
         clearCompletedStationTickets,
         updateTableLayout,
+        resetTablesLayout,
         addTable,
         deleteTable,
         updateTableDetails,

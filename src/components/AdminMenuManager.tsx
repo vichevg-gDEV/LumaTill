@@ -22,7 +22,8 @@ import {
   ToggleRight
 } from 'lucide-react';
 import { usePOS } from '../context/POSContext';
-import { Product, MenuCategoryTab } from '../types';
+import { Product, MenuCategoryTab, FDAAllergen } from '../types';
+import { AllergenMicroDots, AllergenSelector } from './AllergenBadgeList';
 
 export const AdminMenuManager: React.FC = () => {
   const { 
@@ -63,6 +64,7 @@ export const AdminMenuManager: React.FC = () => {
   const [prodFormPrice, setProdFormPrice] = useState<string>('');
   const [prodFormSku, setProdFormSku] = useState<string>('');
   const [prodFormStation, setProdFormStation] = useState<'kitchen' | 'bar' | 'aux'>('kitchen');
+  const [prodFormAllergens, setProdFormAllergens] = useState<FDAAllergen[]>([]);
   const [prodError, setProdError] = useState<string>('');
 
   // Inline Price Edit State
@@ -93,6 +95,7 @@ export const AdminMenuManager: React.FC = () => {
     setProdFormPrice('');
     setProdFormSku('');
     setProdFormStation(activeCategory?.destinationStation || 'kitchen');
+    setProdFormAllergens([]);
     setProdError('');
     setIsProductModalOpen(true);
   };
@@ -106,6 +109,7 @@ export const AdminMenuManager: React.FC = () => {
     setProdFormPrice(prod.price.toString());
     setProdFormSku(prod.sku || '');
     setProdFormStation(prod.destinationStation || (prod.category === 'drinks' ? 'bar' : 'kitchen'));
+    setProdFormAllergens(prod.allergens || []);
     setProdError('');
     setIsProductModalOpen(true);
   };
@@ -133,6 +137,7 @@ export const AdminMenuManager: React.FC = () => {
         price: priceNum,
         sku: prodFormSku.trim() || undefined,
         destinationStation: prodFormStation,
+        allergens: prodFormAllergens,
       });
     } else {
       addProduct({
@@ -143,6 +148,7 @@ export const AdminMenuManager: React.FC = () => {
         active: true,
         sku: prodFormSku.trim() || undefined,
         destinationStation: prodFormStation,
+        allergens: prodFormAllergens,
       });
     }
 
@@ -397,8 +403,13 @@ export const AdminMenuManager: React.FC = () => {
                     >
                       {/* Name & SKU */}
                       <td className="py-2.5 px-3 font-medium text-zinc-100">
-                        <div className="flex flex-col">
-                          <span className="font-semibold text-white">{product.name}</span>
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-semibold text-white">{product.name}</span>
+                            {product.allergens && product.allergens.length > 0 && (
+                              <AllergenMicroDots allergens={product.allergens} size="xs" showLabels={true} />
+                            )}
+                          </div>
                           {product.sku && (
                             <span className="text-[10px] font-mono text-zinc-500">{product.sku}</span>
                           )}
@@ -631,6 +642,13 @@ export const AdminMenuManager: React.FC = () => {
                     <option value="bar">Bar Mixology (Bartender Drink Ticket)</option>
                     <option value="aux">Auxiliary (No Ticket Dispatch)</option>
                   </select>
+                </div>
+
+                <div className="pt-1">
+                  <AllergenSelector
+                    selectedAllergens={prodFormAllergens}
+                    onChange={setProdFormAllergens}
+                  />
                 </div>
 
                 <div className="flex gap-2 pt-2">

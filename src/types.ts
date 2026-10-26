@@ -26,6 +26,17 @@ export interface MenuCategoryTab {
   isSystem?: boolean;
 }
 
+export type FDAAllergen = 
+  | 'milk'
+  | 'eggs'
+  | 'fish'
+  | 'crustacean'
+  | 'tree_nuts'
+  | 'peanuts'
+  | 'wheat'
+  | 'soybeans'
+  | 'sesame';
+
 export interface Product {
   id: string;
   name: string;
@@ -36,6 +47,7 @@ export interface Product {
   sku?: string;
   taxRate?: number;
   destinationStation?: 'kitchen' | 'bar' | 'aux';
+  allergens?: FDAAllergen[];
 }
 
 export interface VenueTable {
@@ -64,6 +76,7 @@ export interface OrderItem {
   status: OrderItemStatus;
   submittedAt?: string;
   destination?: 'kitchen' | 'bar' | 'aux';
+  allergens?: FDAAllergen[];
 }
 
 export interface StationTicketItem {
@@ -72,6 +85,7 @@ export interface StationTicketItem {
   quantity: number;
   category: ProductCategory;
   note?: string;
+  allergens?: FDAAllergen[];
 }
 
 export interface StationTicket {

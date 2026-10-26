@@ -319,11 +319,18 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose })
 
                 <div className="space-y-1.5 py-1.5">
                   {completedOrder.items.map(item => (
-                    <div key={item.id} className="flex justify-between">
-                      <span className="text-zinc-100 font-medium">
-                        {item.quantity}x {item.name}
-                      </span>
-                      <span className="tabular font-bold">
+                    <div key={item.id} className="flex justify-between items-start gap-2">
+                      <div className="flex flex-col">
+                        <span className="text-zinc-100 font-medium">
+                          {item.quantity}x {item.name}
+                        </span>
+                        {item.allergens && item.allergens.length > 0 && (
+                          <span className="text-[10px] text-amber-300/90 font-mono">
+                            * Contains: {item.allergens.map(a => a.replace('_', ' ').toUpperCase()).join(', ')}
+                          </span>
+                        )}
+                      </div>
+                      <span className="tabular font-bold shrink-0">
                         {settings.currencySymbol}{(item.priceAtTime * item.quantity).toFixed(2)}
                       </span>
                     </div>

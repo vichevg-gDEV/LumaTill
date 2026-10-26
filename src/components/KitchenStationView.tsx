@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { usePOS } from '../context/POSContext';
 import { StationTicket } from '../types';
+import { AllergenMicroDots } from './AllergenBadgeList';
 
 export const KitchenStationView: React.FC = () => {
   const { 
@@ -265,6 +266,11 @@ export const KitchenStationView: React.FC = () => {
                             <span className="font-bold text-white leading-snug">
                               {item.name}
                             </span>
+                            {item.allergens && item.allergens.length > 0 && (
+                              <div className="mt-1">
+                                <AllergenMicroDots allergens={item.allergens} size="xs" showLabels={true} />
+                              </div>
+                            )}
                             {item.note && (
                               <p className="text-xs text-amber-300 font-mono mt-1 bg-amber-400/10 px-2.5 py-1 rounded-lg border border-amber-400/25 font-semibold">
                                 ↳ {item.note}
